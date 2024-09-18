@@ -5,20 +5,28 @@ on:
   push:
 
 env:
-  GREETING_MESSAGE: "Hello, World!"
-  GOODBYE_MESSAGE: "Goodbye, World!"
+  REPOSITORY_NAME: ${{ github.repository }}
+  CURRENT_TIME: ${{ now() }}
 
 jobs:
   say-hello:
     runs-on: ubuntu-latest
     steps:
-      - name: Print ${GREETING_MESSAGE}
-        run: echo "${GREETING_MESSAGE}"
+      - name: Set GREETING_MESSAGE
+        env:
+          GREETING_MESSAGE: "Hello, World!"
+        run: |
+      - name: Print greeting message with repository name and current time
+        run: |
+          echo "${GREETING_MESSAGE} from ${REPOSITORY_NAME} at ${CURRENT_TIME}"
 
   say-goodbye:
     needs: say-hello
     runs-on: ubuntu-latest
     if: github.status_code == '0'
     steps:
-      - name: Print ${GOODBYE_MESSAGE}
-        run: echo "${GOODBYE_MESSAGE}"
+      - name: Print goodbye message with repository name and current time
+        env:
+          GOODBYE_MESSAGE: "${GREETING_MESSAGE} Goodbye! from ${REPOSITORY_NAME} at ${CURRENT_TIME}"
+        run: |
+          echo "${GOODBYE_MESSAGE}"
