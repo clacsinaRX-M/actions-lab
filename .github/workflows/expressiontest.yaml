@@ -1,12 +1,21 @@
-name: Generate random failure
+name: Hi Mascot
 on: push
+env:
+  mascot: Mona
+  super_duper_var: totally_awesome
+
 jobs:
-  randomly-failing-job:
-    runs-on: ubuntu-latest
+  windows_job:
+    runs-on: windows-latest
     steps:
-      - name: Generate 0 or 1
-        id: generate_number
-        run:  echo "random_number=$(($RANDOM % 2))" >> $GITHUB_OUTPUT
-      - name: Pass or fail
-        run: |
-          if [[ ${{ steps.generate_number.outputs.random_number }} == 0 ]]; then exit 0; else exit 1; fi
+      - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
+      - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
+        env:
+          mascot: Octocat
+  linux_job:
+    runs-on: ubuntu-latest
+    env:
+      mascot: Tux
+    steps:
+      - run: echo 'Hi ${{ env.mascot }}'  # Hi Tux
+
