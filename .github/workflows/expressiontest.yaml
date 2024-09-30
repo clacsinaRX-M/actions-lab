@@ -1,33 +1,12 @@
-name: Expression Example
-
-on: [push]
-
+name: Generate random failure
+on: push
 jobs:
-  example-job:
+  randomly-failing-job:
     runs-on: ubuntu-latest
-    outputs:
-      message: ${{ steps.message.outputs.message }}
     steps:
-      - name: Demonstrate string expression
-        run: echo "${{ 'Hello, ' + github.actor + '!' }}"
-        outputs:
-          message: "Hello, {{ github.actor }}!"
-
-      - name: Demonstrate numeric expression
-        run: echo "${{ 2 + 3 * 4 }}"
-
-      - name: Demonstrate boolean expression
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+      - name: Generate 0 or 1
+        id: generate_number
+        run:  echo "random_number=$(($RANDOM % 2))" >> $GITHUB_OUTPUT
+      - name: Pass or fail
         run: |
-          echo "This step runs only on push to main branch"
-          echo "::set-output name=message::This step runs only on push to main branch"
-
-      - name: Demonstrate function usage
-        run: echo "SHA is ${{ github.sha }}, shortened to ${{ github.sha != null && contains(github.sha, '-') && github.sha || github.sha[0:7] }}"
-
-      - name: Demonstrate context access
-        env:
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        run: |
-          echo "Last commit message was '$COMMIT_MESSAGE'"
-          echo "::set-output name=message::Last commit message was '$COMMIT_MESSAGE'"
+          if [[ ${{ steps.generate_number.outputs.random_number }} == 0 ]]; then exit 0; else exit 1; fi
