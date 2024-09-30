@@ -1,0 +1,19 @@
+name: Secret Example
+
+on: [push]
+
+jobs:
+  demo-secret:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use a secret
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET_TOKEN }}
+        run: |
+          echo "The secret is masked: $MY_SECRET"
+          if [ "$MY_SECRET" = "my-secret-value" ]; then
+            echo "Secret verified successfully!"
+          else
+            echo "Secret verification failed!"
+          fi
+
