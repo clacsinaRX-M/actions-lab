@@ -1,21 +1,20 @@
-name: Hi Mascot
+name: Build
 on: push
-env:
-  mascot: Mona
-  super_duper_var: totally_awesome
 
 jobs:
-  windows_job:
-    runs-on: windows-latest
-    steps:
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Mona
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
-        env:
-          mascot: Octocat
-  linux_job:
+  build:
     runs-on: ubuntu-latest
-    env:
-      mascot: Tux
     steps:
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Tux
+      - uses: actions/checkout@v4
+      - name: Build with logs
+        run: |
+          mkdir ${{ runner.temp }}/build_logs
+          echo "Logs from building" > ${{ runner.temp }}/build_logs/build.logs
+          exit 1
+      - name: Upload logs on fail
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build failure logs
+          path: ${{ runner.temp }}/build_logs
 
