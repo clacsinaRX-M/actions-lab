@@ -1,0 +1,35 @@
+name: Shell and Script Demo
+
+on: [push]
+
+defaults:
+  run:
+    shell: bash
+    working-directory: scripts
+
+jobs:
+  demo-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create scripts directory
+        run: mkdir -p scripts
+
+      - name: Simple shell command
+        run: echo "Current directory is $(pwd)"
+
+      - name: Multi-line shell script
+        run: |
+          echo "This is a multi-line script"
+          ls -la
+          echo "Current date: $(date)"
+
+      - name: Run Python script
+        shell: python
+        run: |
+          import os
+          print(f"Python version: {os.sys.version}")
+          print(f"Current working directory: {os.getcwd()}")
+
